@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from django_ckeditor_5.fields import CKEditor5Field # Importamos el CKEditor 5 para el texto enriquecido
 
 # MODELOS
 
 class Blog(models.Model):
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    content = CKEditor5Field('Content', config_name='extends') # Campo de texto con CKEditor 5
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
