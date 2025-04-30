@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blogapp.urls')),  # Conecta las URLs de blogapp
+    path("ckeditor5/", include('django_ckeditor_5.urls')), # Se agrega la ruta para el funcionamiento de CKEditor 5 para la edicion enriquecida
 ]
