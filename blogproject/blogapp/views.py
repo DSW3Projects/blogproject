@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from .forms import BlogForm  # Importa tu formulario aquí
 
 
 
@@ -23,11 +24,11 @@ class BlogDetailView(DetailView):
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
-    fields = ['title', 'content']
+    form_class = BlogForm  # Usa tu formulario en lugar de 'fields'
     template_name = 'blog_form.html'
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.author = self.request.user  # Asocia el usuario actual como autor
         return super().form_valid(form)
 
     def get_success_url(self):
