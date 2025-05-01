@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -155,8 +156,14 @@ customColorPalette = [
         },
     ]
 
+MEDIA_URL = '/media/' 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
 #CKEDITOR_5_CUSTOM_CSS = 'path_to.css' # optional
-#CKEDITOR_5_FILE_STORAGE = "path_to_storage.CustomStorage" # optional
+CKEDITOR_5_FILE_STORAGE = "blogapp.storage.CKEditorCustomStorage"
+
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': {

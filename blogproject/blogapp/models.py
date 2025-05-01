@@ -7,7 +7,7 @@ from django_ckeditor_5.fields import CKEditor5Field # Importamos el CKEditor 5 p
 
 class Blog(models.Model):
     title = models.CharField(max_length=200)
-    content = CKEditor5Field('Content', config_name='extends') # Campo de texto con CKEditor 5
+    content = CKEditor5Field('Content', config_name='extends')  # CKEditor para el contenido
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -19,7 +19,7 @@ class Review(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='reviews')
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    comment = models.TextField()
+    comment = models.TextField()  # Este es el campo que almacena el contenido HTML
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

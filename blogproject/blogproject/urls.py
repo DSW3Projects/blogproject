@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blogapp.urls')),  # Conecta las URLs de blogapp
     path("ckeditor5/", include('django_ckeditor_5.urls')), # Se agrega la ruta para el funcionamiento de CKEditor 5 para la edicion enriquecida
-] 
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
