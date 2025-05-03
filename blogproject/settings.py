@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blogapp',
     'widget_tweaks',
-    'django_ckeditor_5', # Se registra la app CKEditor 5 en el proyecto
+    'django_ckeditor_5',
+     'tailwind', # Se registra la app CKEditor 5 en el proyecto
 ]
 
 MIDDLEWARE = [
@@ -230,3 +231,6 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
