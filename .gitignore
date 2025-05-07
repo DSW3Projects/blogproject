@@ -1,0 +1,6 @@
+# Ignorar archivos compilados de Python
+*.pyc
+*.pyo
+
+# Ignorar la base de datos SQLite
+db.sqlite3
