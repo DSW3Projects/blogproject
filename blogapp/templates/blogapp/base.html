@@ -10,10 +10,12 @@
     }
   </script>
 <head>
+  {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog and Reviews</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="{% static 'css/output.css' %}" rel="stylesheet">
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -38,7 +40,7 @@
     }
 
     html.dark {
-      background-color: black;
+      background-color: rgb(2, 2, 2);
     }
 
     @keyframes fade-in {

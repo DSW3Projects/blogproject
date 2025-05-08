@@ -1,19 +1,71 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+
 {% block content %}
-  <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Write a Review</h1>
-  <form method="post" class="space-y-4 transition-all duration-700 ease-in-out animate-fade-in">{% csrf_token %}
-    <div class="space-y-2 transition-all duration-700 ease-in-out">
-      {% for field in form %}
-        <div>
-          <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">{{ field.label }}</label>
-          {{ field|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
-          {% if field.errors %}
-            <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-          {% endif %}
-        </div>
+<h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Write a Review</h1>
+
+<form method="post" class="space-y-4 transition-all duration-700 ease-in-out animate-fade-in">
+  {% csrf_token %}
+
+  <!-- Rating Field (Heart Selector) -->
+  <div>
+    <label class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Rating</label>
+
+    <!-- Ocultamos el campo rating original -->
+    {{ form.rating|add_class:"hidden" }}
+
+    <!-- Contenedor de corazones -->
+    <div id="heart-rating" class="flex gap-2 cursor-pointer text-red-500">
+      {% for i in "12345" %}
+        <svg data-value="{{ forloop.counter }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          class="w-8 h-8 transition-all duration-200 ease-in-out">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 21C12 21 4 13.9 4 8.5C4 5.5 6.5 3 9.5 3C11.2 3 12.8 4.1 13.5 5.6C14.2 4.1 15.8 3 17.5 3C20.5 3 23 5.5 23 8.5C23 13.9 15 21 15 21H12Z" />
+        </svg>
       {% endfor %}
     </div>
-    <button type="submit" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white dark:bg-green-600 dark:hover:bg-green-700 rounded transition-all duration-500 ease-in-out">Submit Review</button>
-  </form>
+
+    {% if form.rating.errors %}
+      <p class="text-red-500 text-sm">{{ form.rating.errors|striptags }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Comment Field -->
+  <div>
+    <label for="{{ form.comment.id_for_label }}" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Comment</label>
+    {{ form.comment|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+    {% if form.comment.errors %}
+      <p class="text-red-500 text-sm">{{ form.comment.errors|striptags }}</p>
+    {% endif %}
+  </div>
+
+  <button type="submit" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white dark:bg-green-600 dark:hover:bg-green-700 rounded transition-all duration-500 ease-in-out">
+    Submit Review
+  </button>
+</form>
+
+<!-- Script para manejar los corazones -->
+<script>
+  const hearts = document.querySelectorAll('#heart-rating svg');
+  const ratingInput = document.querySelector('input[name="{{ form.rating.name }}"]');
+
+  hearts.forEach((heart, index) => {
+    heart.addEventListener('mouseover', () => {
+      hearts.forEach((h, i) => {
+        h.setAttribute('fill', i <= index ? 'currentColor' : 'none');
+      });
+    });
+
+    heart.addEventListener('click', () => {
+      ratingInput.value = index + 1;
+    });
+
+    heart.addEventListener('mouseleave', () => {
+      const selected = parseInt(ratingInput.value);
+      hearts.forEach((h, i) => {
+        h.setAttribute('fill', i < selected ? 'currentColor' : 'none');
+      });
+    });
+  });
+</script>
 {% endblock %}
