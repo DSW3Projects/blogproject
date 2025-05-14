@@ -8,8 +8,22 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
 from .forms import BlogForm  # Importa tu formulario aquí
 
+
+@user_passes_test(lambda u: u.is_authenticated and u.username == 'admin')
+def admin_dashboard(request):
+    total_blogs = Blog.objects.count()
+    total_users = User.objects.count()
+    total_reviews = Review.objects.count()
+
+    context = {
+        'total_blogs': total_blogs,
+        'total_users': total_users,
+        'total_reviews': total_reviews,
+    }
+    return render(request, 'blogapp/admin_dashboard.html', context)
 
 
 class BlogListView(ListView):
