@@ -80,7 +80,7 @@
             Logout
           </a>
 
-          {% if user.username == 'admin' %} <!-- Solo un super usuario puede ver el dashboard-->>
+          {% if user.is_superuser %} <!-- Solo un super usuario puede ver el dashboard-->>
             <!-- Botón Dashboard para el admin -->
             <a href="{% url 'blogapp:admin_dashboard' %}" class="bg-gradient-to-r from-orange-600 via-orange-500 to-yellow-400 hover:scale-105 text-black font-medium py-2 px-4 rounded-full ease-in-out transition-all duration-300">
               Dashboard
