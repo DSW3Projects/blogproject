@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import user_passes_test
 from .forms import BlogForm  # Importa tu formulario aquí
 
 
-@user_passes_test(lambda u: u.is_authenticated and u.username == 'admin')
+@user_passes_test(lambda u: u.is_authenticated and u.is_superuser)
 def admin_dashboard(request):
     total_blogs = Blog.objects.count()
     total_users = User.objects.count()
