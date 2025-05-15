@@ -15,12 +15,11 @@
           </label>
 
           {% if field.name == "tags" %}
-            <!-- Ocultar el select original -->
+           
             <div class="hidden">
               {{ field }}
             </div>
 
-            <!-- Contenedor de botones para tags -->
             <div id="tags-container" class="flex flex-wrap gap-2">
               {% for choice in field.field.choices %}
                 <button type="button"
@@ -48,11 +47,11 @@
   </form>
 
   <script>
-    // Seleccionar botones y el select original
+   
     const tagButtons = document.querySelectorAll('#tags-container .tag-btn');
     const hiddenSelect = document.querySelector('select[name="{{ form.tags.name }}"]');
 
-    // Inicializar el estado de los botones según el select
+   
     const selectedValues = Array.from(hiddenSelect.selectedOptions).map(opt => opt.value);
 
     tagButtons.forEach(button => {
@@ -68,14 +67,14 @@
         const option = hiddenSelect.querySelector(`option[value="${value}"]`);
 
         if (option.selected) {
-          // Deseleccionar
+        
           option.selected = false;
           button.classList.remove(
             'bg-green-500', 'text-white', 'border-green-700',
             'dark:bg-green-700', 'dark:text-white', 'dark:border-green-500'
           );
         } else {
-          // Seleccionar
+ 
           option.selected = true;
           button.classList.add(
             'bg-green-500', 'text-white', 'border-green-700',
