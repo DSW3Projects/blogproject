@@ -1,20 +1,88 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% block content %}
-  {{ form.media }} <!-- Se cargan los archivos JS Y CSS necesarios para el widget de CKEdior 5-->
+  {{ form.media }}
+
   <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Create a New Blog</h1>
-  <form method="post" class="space-y-4 transition-all duration-700 ease-in-out animate-fade-in">{% csrf_token %}
+
+  <form method="post" class="space-y-4 transition-all duration-700 ease-in-out animate-fade-in">
+    {% csrf_token %}
     <div class="space-y-2 transition-all duration-700 ease-in-out">
       {% for field in form %}
         <div>
-          <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">{{ field.label }}</label>
-          {{ field|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">
+            {{ field.label }}
+          </label>
+
+          {% if field.name == "tags" %}
+           
+            <div class="hidden">
+              {{ field }}
+            </div>
+
+            <div id="tags-container" class="flex flex-wrap gap-2">
+              {% for choice in field.field.choices %}
+                <button type="button"
+                        class="tag-btn px-4 py-2 rounded-lg border border-green-300 dark:border-green-700 text-gray-900 dark:text-white bg-white dark:bg-gray-800"
+                        data-value="{{ choice.0 }}">
+                  {{ choice.1 }}
+                </button>
+              {% endfor %}
+            </div>
+
+          {% else %}
+            {{ field|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+          {% endif %}
+
           {% if field.errors %}
             <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
           {% endif %}
         </div>
       {% endfor %}
     </div>
-    <button type="submit" class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 rounded transition-all duration-500 ease-in-out">Post Blog</button>
+
+    <button type="submit" class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 rounded transition-all duration-500 ease-in-out">
+      Post Blog
+    </button>
   </form>
+
+  <script>
+   
+    const tagButtons = document.querySelectorAll('#tags-container .tag-btn');
+    const hiddenSelect = document.querySelector('select[name="{{ form.tags.name }}"]');
+
+   
+    const selectedValues = Array.from(hiddenSelect.selectedOptions).map(opt => opt.value);
+
+    tagButtons.forEach(button => {
+      if (selectedValues.includes(button.dataset.value)) {
+        button.classList.add(
+          'bg-green-500', 'text-white', 'border-green-700',
+          'dark:bg-green-700', 'dark:text-white', 'dark:border-green-500'
+        );
+      }
+
+      button.addEventListener('click', () => {
+        const value = button.dataset.value;
+        const option = hiddenSelect.querySelector(`option[value="${value}"]`);
+
+        if (option.selected) {
+        
+          option.selected = false;
+          button.classList.remove(
+            'bg-green-500', 'text-white', 'border-green-700',
+            'dark:bg-green-700', 'dark:text-white', 'dark:border-green-500'
+          );
+        } else {
+ 
+          option.selected = true;
+          button.classList.add(
+            'bg-green-500', 'text-white', 'border-green-700',
+            'dark:bg-green-700', 'dark:text-white', 'dark:border-green-500'
+          );
+        }
+      });
+    });
+  </script>
+
 {% endblock %}

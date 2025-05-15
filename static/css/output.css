@@ -182494,3 +182494,7 @@ video {
 .text-gray-900 {
   color: #1a202c;
 }
+
+.tag-chip.selected {
+  @apply bg-blue-500 text-white border-blue-500;
+}

@@ -4,12 +4,18 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django_ckeditor_5.fields import CKEditor5Field # Importamos el CKEditor 5 para el texto enriquecido
 
 # MODELOS
+class Tag(models.Model):
+    name = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.name
+    
 class Blog(models.Model):
     title = models.CharField(max_length=200)
     content = CKEditor5Field('Content', config_name='extends')  # CKEditor para el contenido
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField(Tag, related_name='blogs')
 
     def __str__(self):
         return self.title
@@ -35,3 +41,4 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.commenter.username}"
+    
