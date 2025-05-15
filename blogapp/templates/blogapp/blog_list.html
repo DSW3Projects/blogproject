@@ -8,8 +8,11 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out text-gray-900 dark:text-white animate-fade-in">
           <h2 class="text-xl font-semibold mb-2">
             <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-pink-400 hover:text-pink-300 transition-colors duration-300">
-              {% if blog.first_image_url %}
-  <img src="{{ blog.first_image_url }}" alt="Imagen de {{ blog.title }}" class="w-full h-64 object-cover rounded-xl mb-4">
+           {% if blog.first_image_url %}
+  <div class="w-full aspect-[16/9] mb-4 overflow-hidden rounded-xl">
+    <img src="{{ blog.first_image_url }}" alt="Imagen de {{ blog.title }}"
+         class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+  </div>
 {% endif %}
               {{ blog.title }}
             </a>
