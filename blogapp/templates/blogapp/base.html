@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
   <script>
-    // Aplica el tema ANTES de que Tailwind cargue, para evitar flash
     const userTheme = localStorage.getItem('theme');
     if (userTheme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -130,7 +129,7 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    /* Animación para flotar elementos */
+
     @keyframes float {
       0%, 100% {
         transform: translateY(0);
@@ -144,12 +143,10 @@
       animation: float 6s ease-in-out infinite;
     }
     
-    /* Transiciones suaves */
     .transition-slow {
       transition: all 0.5s ease;
     }
     
-    /* Estilos para las tarjetas de blog */
     .blog-card {
       transition: all 0.3s ease;
       transform: translateY(0);
@@ -162,11 +159,19 @@
   </style>
   {% block extra_css %}{% endblock %}
 </head>
+{% if messages %}
+  <ul class="mb-4">
+    {% for message in messages %}
+      <li class="text-sm text-red-500">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
 <body class="flex flex-col min-h-screen font-sans bg-white/80 dark:bg-black/80 text-gray-900 dark:text-white">
-  <!-- Cursor personalizado -->
+
   <img id="custom-cursor" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23ec4899' viewBox='0 0 24 24'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>" />
 
-  <!-- Navbar Romántica -->
+
   <nav class="glass-effect shadow-lg sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-20 items-center">
@@ -174,26 +179,37 @@
           <i class="fas fa-heart text-rose-500 text-3xl animate-heartbeat"></i>
           <span class="text-2xl font-serif font-bold text-gray-900 dark:text-rose-200">Amor en Línea</span>
         </a>
+     
+  <form method="GET" action="{% url 'blogapp:search_results' %}" class="relative">
+    <input 
+      type="text" 
+      name="q" 
+      placeholder="Buscar por tag..." 
+      class="rounded-full px-4 py-2 bg-gradient-to-r from-pink-100 to-pink-200 dark:from-gray-700 dark:to-gray-800 placeholder-pink-500 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-400 shadow-md"
+    >
+    <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-pink-500 dark:text-white hover:text-pink-700">
+      <i class="fas fa-search"></i>
+    </button>
+  </form>
+
+
         <div class="flex items-center space-x-4">
-          <!-- Botón de cambio de tema -->
           <button onclick="toggleDarkMode()" class="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 text-gray-900 dark:text-white hover:scale-105 transition-all duration-300 shadow-lg">
             <span id="theme-icon" class="transition-transform duration-500 transform">✨</span>
             <span id="theme-label" class="transition-opacity duration-500 ease-in-out">Modo Claro</span>
           </button>
 
           {% if user.is_authenticated %}
-            <!-- Botón New Blog -->
             <a href="{% url 'blogapp:add_blog' %}" class="bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-500 hover:scale-105 text-white font-medium py-2 px-4 rounded-full ease-in-out transition-all duration-300 shadow-lg flex items-center">
               <i class="fas fa-plus mr-2"></i> Nueva Historia
             </a>
 
-            <!-- Botón Logout -->
+
             <a href="{% url 'blogapp:logout' %}" class="bg-gradient-to-r from-red-500 to-primary-600 hover:from-red-600 hover:to-primary-700 hover:scale-105 text-white font-medium py-2 px-4 rounded-full ease-in-out transition-all duration-300 shadow-lg flex items-center">
               <i class="fas fa-sign-out-alt mr-2"></i> Salir
             </a>
 
             {% if user.is_superuser %}
-              <!-- Botón Dashboard para el admin -->
               <a href="{% url 'blogapp:admin_dashboard' %}" class="bg-gradient-to-r from-secondary-400 to-primary-500 hover:from-secondary-500 hover:to-primary-600 hover:scale-105 text-white font-medium py-2 px-4 rounded-full ease-in-out transition-all duration-300 shadow-lg flex items-center">
                 <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
               </a>
@@ -215,7 +231,6 @@
     </div>
   </main>
 
-  <!-- Footer Romántico -->
   <footer class="glass-effect py-8 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row justify-between items-center">
@@ -245,21 +260,20 @@
     </div>
   </footer>
 
-  <!-- Efectos decorativos flotantes -->
+
   <div class="fixed top-20 left-10 w-8 h-8 rounded-full bg-rose-300/30 blur-xl animate-float delay-100"></div>
   <div class="fixed bottom-1/4 right-1/4 w-12 h-12 rounded-full bg-pink-300/20 blur-lg animate-float delay-300"></div>
   <div class="fixed top-1/3 right-20 w-6 h-6 rounded-full bg-rose-400/20 blur-md animate-float delay-200"></div>
   <div class="fixed bottom-20 left-1/4 w-10 h-10 rounded-full bg-pink-400/20 blur-lg animate-float delay-400"></div>
 
   <script>
-    // Cursor personalizado
+
     const cursor = document.getElementById('custom-cursor');
     document.addEventListener('mousemove', e => {
       cursor.style.top = e.clientY + 'px';
       cursor.style.left = e.clientX + 'px';
     });
 
-    // Cambiar color del cursor al pasar sobre elementos interactivos
     const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, [role="button"], [tabindex="0"]');
     interactiveElements.forEach(el => {
       el.addEventListener('mouseenter', () => {
@@ -270,7 +284,7 @@
       });
     });
 
-    // Toggle dark mode (manteniendo la función original mejorada)
+
     function toggleDarkMode() {
       const root = document.documentElement;
       const icon = document.getElementById('theme-icon');
@@ -290,7 +304,7 @@
       }, 250);
     }
 
-    // Efecto de corazones flotantes al cargar
+ 
     function createFloatingHeart() {
       const heart = document.createElement('div');
       heart.innerHTML = '<i class="fas fa-heart text-rose-300/30"></i>';
@@ -305,7 +319,7 @@
       }, 10000);
     }
     
-    // Crear algunos corazones al cargar
+
     for (let i = 0; i < 5; i++) {
       setTimeout(createFloatingHeart, i * 2000);
     }

@@ -1,16 +1,42 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">All Blogs</h1>
-  <div class="grid gap-6">
-    {% for blog in object_list %}
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
-        <h2 class="text-xl font-semibold mb-2">
-          <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
-        </h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400">by {{ blog.author.username }} - {{ blog.created_at }}</p>
-      </div>
-    {% empty %}
-      <p class="text-gray-500 dark:text-gray-400 text-center">No blogs have been posted yet.</p>
-    {% endfor %}
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Todos los blogs</h1>
+
+    <div class="grid gap-6">
+      {% for blog in object_list %}
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out text-gray-900 dark:text-white animate-fade-in">
+          <h2 class="text-xl font-semibold mb-2">
+            <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-pink-400 hover:text-pink-300 transition-colors duration-300">
+              {{ blog.title }}
+            </a>
+          </h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            by <span class="font-medium text-pink-500">{{ blog.author.username }}</span> — {{ blog.created_at|date:"d M Y" }}
+          </p>
+
+          <p class="mt-2 text-sm">
+            <strong>Rating:</strong>
+            {% if blog.average_rating %}
+              {{ blog.average_rating|floatformat:1 }} / 5 ❤️
+            {% else %}
+              No hay reviews 
+            {% endif %}
+          </p>
+
+         <p class="text-sm mt-1">
+  <strong>Tags:</strong>
+  {% for tag in blog.tags.all %}
+    <span class="inline-block bg-pink-100 text-pink-800 text-xs font-semibold px-2 py-1 rounded-full mr-1">{{ tag.name }}</span>
+  {% empty %}
+    <span class="text-gray-400">No tiene etiquetas</span>
+  {% endfor %}
+</p>
+
+        </div>
+      {% empty %}
+        <p class="text-center text-gray-500 dark:text-gray-400 animate-fade-in">Aun no se han posteado blogs.</p>
+      {% endfor %}
+    </div>
   </div>
 {% endblock %}

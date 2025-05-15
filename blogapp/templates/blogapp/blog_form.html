@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+
 {% block content %}
   {{ form.media }}
 
-  <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Create a New Blog</h1>
+  <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">Crea un nuevo Blog</h1>
 
-  <form method="post" class="space-y-4 transition-all duration-700 ease-in-out animate-fade-in">
+  <form method="post" class="space-y-6 max-w-2xl mx-auto transition-all duration-700 ease-in-out animate-fade-in">
     {% csrf_token %}
-    <div class="space-y-2 transition-all duration-700 ease-in-out">
+    <div class="space-y-4">
       {% for field in form %}
         <div>
           <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">
@@ -15,23 +16,26 @@
           </label>
 
           {% if field.name == "tags" %}
-           
-            <div class="hidden">
-              {{ field }}
-            </div>
+            <div class="relative">
+              <button type="button" id="dropdownToggle"
+                      class="w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 border border-pink-300 dark:border-pink-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-left">
+                Seleccionar Tags
+                <i class="fas fa-chevron-down float-right mt-1"></i>
+              </button>
 
-            <div id="tags-container" class="flex flex-wrap gap-2">
-              {% for choice in field.field.choices %}
-                <button type="button"
-                        class="tag-btn px-4 py-2 rounded-lg border border-green-300 dark:border-green-700 text-gray-900 dark:text-white bg-white dark:bg-gray-800"
-                        data-value="{{ choice.0 }}">
-                  {{ choice.1 }}
-                </button>
-              {% endfor %}
+              <div id="dropdownMenu" class="hidden absolute z-10 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto p-4">
+                {% for tag in form.tags.field.queryset %}
+                  <label class="flex items-center mb-2 text-gray-800 dark:text-gray-200">
+                    <input type="checkbox" name="tags" value="{{ tag.id }}"
+                           {% if tag in form.initial.tags %}checked{% endif %}
+                           class="mr-2 accent-pink-500">
+                    {{ tag.name }}
+                  </label>
+                {% endfor %}
+              </div>
             </div>
-
           {% else %}
-            {{ field|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+            {{ field|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-pink-300 dark:border-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-400" }}
           {% endif %}
 
           {% if field.errors %}
@@ -41,48 +45,26 @@
       {% endfor %}
     </div>
 
-    <button type="submit" class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 rounded transition-all duration-500 ease-in-out">
-      Post Blog
-    </button>
+    <div class="flex justify-center">
+      <button type="submit"
+              class="px-6 py-2 bg-pink-400 hover:bg-pink-500 text-white dark:bg-pink-500 dark:hover:bg-pink-600 rounded-lg shadow-md transition-all duration-500 ease-in-out">
+        Subir
+      </button>
+    </div>
   </form>
 
   <script>
-   
-    const tagButtons = document.querySelectorAll('#tags-container .tag-btn');
-    const hiddenSelect = document.querySelector('select[name="{{ form.tags.name }}"]');
+    const toggleButton = document.getElementById('dropdownToggle');
+    const dropdownMenu = document.getElementById('dropdownMenu');
 
-   
-    const selectedValues = Array.from(hiddenSelect.selectedOptions).map(opt => opt.value);
+    toggleButton.addEventListener('click', () => {
+      dropdownMenu.classList.toggle('hidden');
+    });
 
-    tagButtons.forEach(button => {
-      if (selectedValues.includes(button.dataset.value)) {
-        button.classList.add(
-          'bg-green-500', 'text-white', 'border-green-700',
-          'dark:bg-green-700', 'dark:text-white', 'dark:border-green-500'
-        );
+    window.addEventListener('click', (e) => {
+      if (!toggleButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.classList.add('hidden');
       }
-
-      button.addEventListener('click', () => {
-        const value = button.dataset.value;
-        const option = hiddenSelect.querySelector(`option[value="${value}"]`);
-
-        if (option.selected) {
-        
-          option.selected = false;
-          button.classList.remove(
-            'bg-green-500', 'text-white', 'border-green-700',
-            'dark:bg-green-700', 'dark:text-white', 'dark:border-green-500'
-          );
-        } else {
- 
-          option.selected = true;
-          button.classList.add(
-            'bg-green-500', 'text-white', 'border-green-700',
-            'dark:bg-green-700', 'dark:text-white', 'dark:border-green-500'
-          );
-        }
-      });
     });
   </script>
-
 {% endblock %}
