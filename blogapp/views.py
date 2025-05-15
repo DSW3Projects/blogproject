@@ -18,7 +18,7 @@ import json
 from django.db.models import Avg
 
 
-@user_passes_test(lambda u: u.is_authenticated and u.username == 'admin')
+@user_passes_test(lambda u: u.is_authenticated and u.is_superuser)
 def admin_dashboard(request):
     total_blogs = Blog.objects.count()
     total_users = User.objects.count()

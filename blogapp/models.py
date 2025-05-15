@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django_ckeditor_5.fields import CKEditor5Field # Importamos el CKEditor 5 para el texto enriquecido
+from django_ckeditor_5.fields import CKEditor5Field
+from bs4 import BeautifulSoup # Importamos el CKEditor 5 para el texto enriquecido
 
 # MODELOS
 class Tag(models.Model):
@@ -10,6 +11,8 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
     
+
+
 class Blog(models.Model):
     title = models.CharField(max_length=200)
     content = CKEditor5Field('Content', config_name='extends')  # CKEditor para el contenido
@@ -19,6 +22,14 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def first_image_url(self):
+        soup = BeautifulSoup(self.content, 'html.parser')
+        img = soup.find('img')
+        if img:
+            return img['src']
+        return None
 
 
 class Review(models.Model):
