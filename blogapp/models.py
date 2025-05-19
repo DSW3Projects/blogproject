@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_ckeditor_5.fields import CKEditor5Field
-from bs4 import BeautifulSoup # Importamos el CKEditor 5 para el texto enriquecido
+from bs4 import BeautifulSoup # type: ignore # Importamos el CKEditor 5 para el texto enriquecido
+from django.contrib.auth.models import AbstractUser
 
 # MODELOS
 class Tag(models.Model):
@@ -53,3 +54,16 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.commenter.username}"
     
+def user_profile_image_path(instance, filename):
+    return f'user/{instance.user.username}/profile_images/{filename}'
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.ImageField(
+        upload_to=user_profile_image_path,  # Puedes personalizar la ruta
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.user.username

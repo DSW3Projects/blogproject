@@ -18,6 +18,7 @@ import json
 from django.db.models import Avg
 
 
+
 @user_passes_test(lambda u: u.is_authenticated and u.is_superuser)
 def admin_dashboard(request):
     total_blogs = Blog.objects.count()
@@ -171,6 +172,10 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
+@login_required
+def profile_view(request):
+    return render(request, 'perfil.html')
+
 def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -196,3 +201,17 @@ def register_view(request):
             return render(request, 'blogapp:bloglist.html', {'error': 'Hubo un error al crear la cuenta. Inténtalo de nuevo.'})
 
     return render(request, 'register.html')
+
+# views.py
+
+from .models import UserProfile
+
+@login_required
+def update_profile_image(request):
+    if request.method == 'POST' and request.FILES.get('profile_image'):
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile.profile_image = request.FILES['profile_image']
+        profile.save()
+    return redirect('blogapp:perfil')  # o el nombre de tu vista de perfil
+
+

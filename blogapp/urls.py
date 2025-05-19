@@ -16,5 +16,9 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('buscar/', views.search_results, name='search_results'),
+    path('perfil/', views.profile_view, name='perfil'),
+    path('perfil/actualizar-imagen/', views.update_profile_image, name='update_profile_image'),
+
+    
 
 ]
