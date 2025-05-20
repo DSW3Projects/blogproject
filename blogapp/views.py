@@ -5,7 +5,7 @@ from .models import Blog, Review, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -172,9 +172,7 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-@login_required
-def profile_view(request):
-    return render(request, 'perfil.html')
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -214,4 +212,10 @@ def update_profile_image(request):
         profile.save()
     return redirect('blogapp:perfil')  # o el nombre de tu vista de perfil
 
+def profile_view_user(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, 'blogapp/profile_user.html', {'profile_user': user})
 
+@login_required
+def profile_view(request):
+    return render(request, 'perfil.html')

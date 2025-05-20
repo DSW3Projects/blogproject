@@ -18,7 +18,8 @@ urlpatterns = [
     path('buscar/', views.search_results, name='search_results'),
     path('perfil/', views.profile_view, name='perfil'),
     path('perfil/actualizar-imagen/', views.update_profile_image, name='update_profile_image'),
+    path('perfil/<str:username>/', views.profile_view_user, name='perfil_user'),
+]
 
     
 
-]
