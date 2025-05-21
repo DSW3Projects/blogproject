@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_ckeditor_5.fields import CKEditor5Field
-from bs4 import BeautifulSoup # Importamos el CKEditor 5 para el texto enriquecido
+from bs4 import BeautifulSoup # type: ignore # Importamos el CKEditor 5 para el texto enriquecido
 
 # MODELOS
 class Tag(models.Model):
