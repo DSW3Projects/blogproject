@@ -192,10 +192,10 @@ def register_view(request):
         try:
             user = User.objects.create_user(username=username, email=email, password=password1)
             user.save()
-            login(request, user)  # Iniciar sesión automáticamente después de registrarse
-            return redirect('blogapp:blog_list')  # Redirigir al blog list
+            login(request, user) 
+            return redirect('blogapp:blog_list') 
         except Exception as e:
-            # Si hay algún otro error al guardar el usuario
+           
             return render(request, 'blogapp:bloglist.html', {'error': 'Hubo un error al crear la cuenta. Inténtalo de nuevo.'})
 
     return render(request, 'register.html')
@@ -210,7 +210,7 @@ def update_profile_image(request):
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         profile.profile_image = request.FILES['profile_image']
         profile.save()
-    return redirect('blogapp:perfil')  # o el nombre de tu vista de perfil
+    return redirect('blogapp:perfil')
 
 def profile_view_user(request, username):
     user = get_object_or_404(User, username=username)
@@ -219,3 +219,21 @@ def profile_view_user(request, username):
 @login_required
 def profile_view(request):
     return render(request, 'perfil.html')
+
+@login_required
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
+def like_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if request.user in review.likes.all():
+        review.likes.remove(request.user)
+    else:
+        review.likes.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', '/'))

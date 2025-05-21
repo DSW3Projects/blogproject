@@ -19,6 +19,8 @@ urlpatterns = [
     path('perfil/', views.profile_view, name='perfil'),
     path('perfil/actualizar-imagen/', views.update_profile_image, name='update_profile_image'),
     path('perfil/<str:username>/', views.profile_view_user, name='perfil_user'),
+    path('comment/<int:comment_id>/like/', views.like_comment, name='like_comment'),
+    path('like-review/<int:review_id>/', views.like_review, name='like_review'),
 ]
 
     

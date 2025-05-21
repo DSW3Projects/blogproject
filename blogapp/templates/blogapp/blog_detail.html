@@ -1,69 +1,91 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <article class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
-    <h1 class="text-3xl font-bold mb-2">{{ object.title }}</h1>
+<article class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
+  <h1 class="text-3xl font-bold mb-2">{{ object.title }}</h1>
 
-    <p class="text-gray-700 dark:text-gray-300 mb-4">{{ blog.content|safe }}</p>
+  <p class="text-gray-700 dark:text-gray-300 mb-4">{{ blog.content|safe }}</p>
 
-    <p class="text-sm text-gray-600 dark:text-gray-500">
-      By {{ object.author.username }} - {{ object.created_at }}
-    </p>
+  <p class="text-sm text-gray-600 dark:text-gray-500">
+    By {{ object.author.username }} - {{ object.created_at }}
+  </p>
 
-    <div class="mt-4">
-      <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Etiquetas:</h3>
-      {% for tag in object.tags.all %}
-        <span class="inline-block bg-pink-100 text-pink-800 text-xs font-semibold px-2 py-1 rounded-full mr-1">
-          {{ tag.name }}
-        </span>
-      {% empty %}
-        <span class="text-sm text-gray-400">No hay etiquetas</span>
-      {% endfor %}
-    </div>
-  </article>
+  <div class="mt-4">
+    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Etiquetas:</h3>
+    {% for tag in object.tags.all %}
+      <span class="inline-block bg-pink-100 text-pink-800 text-xs font-semibold px-2 py-1 rounded-full mr-1">
+        {{ tag.name }}
+      </span>
+    {% empty %}
+      <span class="text-sm text-gray-400">No hay etiquetas</span>
+    {% endfor %}
+  </div>
+</article>
 
-  <section class="mt-8">
-    <h2 class="text-2xl font-semibold mb-4">Reviews</h2>
-    {% for review in object.reviews.all %}
-      <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4 transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
+<section class="mt-8">
+  <h2 class="text-2xl font-semibold mb-4">Reviews</h2>
+  {% for review in object.reviews.all %}
+    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4 transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
+      <div class="flex items-center justify-between">
         <p class="text-blue-700 dark:text-blue-300 font-medium">{{ review.reviewer.username }} - {{ review.rating }}/5 ❤️</p>
-        <p class="text-gray-700 dark:text-gray-300">{{ review.comment|safe }}</p>
 
         {% if user.is_authenticated %}
-          <a href="{% url 'blogapp:add_comment' blog_pk=object.pk review_pk=review.pk %}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 mt-2 inline-block">Add Comment</a>
-        {% else %}
-          <a href="{% url 'blogapp:login' %}?next={% url 'blogapp:blog_detail' object.pk %}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 mt-2 inline-block">Log in to add a comment</a>
+          <form method="post" action="{% url 'blogapp:like_review' review.id %}">
+            {% csrf_token %}
+            <button type="submit" class="text-sm text-pink-500 hover:text-pink-700">
+              👍 {{ review.total_likes }}
+            </button>
+          </form>
         {% endif %}
+      </div>
 
-        <ul class="mt-2 list-disc ml-6 text-gray-600 dark:text-gray-400">
-          {% for comment in review.comments.all %}
-            <li>
+      <p class="text-gray-700 dark:text-gray-300 mt-2">{{ review.comment|safe }}</p>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'blogapp:add_comment' blog_pk=object.pk review_pk=review.pk %}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 mt-2 inline-block">Add Comment</a>
+      {% else %}
+        <a href="{% url 'blogapp:login' %}?next={% url 'blogapp:blog_detail' object.pk %}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 mt-2 inline-block">Log in to add a comment</a>
+      {% endif %}
+
+      <ul class="mt-2 list-disc ml-6 text-gray-600 dark:text-gray-400">
+        {% for comment in review.comments.all %}
+          <li class="flex items-center justify-between">
+            <div>
               <span class="font-semibold text-gray-900 dark:text-white">{{ comment.commenter.username }}</span>: 
               {{ comment.content|safe }}
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% empty %}
-      <p class="text-gray-400">Aun no hay reviews, se el primero en opinar!</p>
-    {% endfor %}
+            </div>
+            {% if user.is_authenticated %}
+              <form method="post" action="{% url 'blogapp:like_comment' comment.id %}" class="ml-4">
+                {% csrf_token %}
+                <button type="submit" class="text-sm text-blue-500 hover:text-blue-700">
+                  👍 {{ comment.total_likes }}
+                </button>
+              </form>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% empty %}
+    <p class="text-gray-400">Aun no hay reviews, ¡sé el primero en opinar!</p>
+  {% endfor %}
 
-    {% if user.is_authenticated %}
-      <form action="{% url 'blogapp:add_review' blog.pk %}" method="get">
-        <button type="submit"
-                class="px-4 py-2 rounded bg-pink-500 text-white hover:bg-pink-600 disabled:bg-gray-400 transition"
-                {% if has_reviewed %}disabled{% endif %}>
-          {% if has_reviewed %}
-            Ya hiciste una reseña
-          {% else %}
-            Hacer reseña
-          {% endif %}
-        </button>
-      </form>
-    {% else %}
-      <p class="text-sm text-gray-500 mt-4">
-        <a href="{% url 'blogapp:login' %}" class="text-pink-500 hover:underline">Inicia sesión</a> para dejar una reseña.
-      </p>
-    {% endif %}
-  </section>
+  {% if user.is_authenticated %}
+    <form action="{% url 'blogapp:add_review' blog.pk %}" method="get">
+      <button type="submit"
+              class="px-4 py-2 rounded bg-pink-500 text-white hover:bg-pink-600 disabled:bg-gray-400 transition"
+              {% if has_reviewed %}disabled{% endif %}>
+        {% if has_reviewed %}
+          Ya hiciste una reseña
+        {% else %}
+          Hacer reseña
+        {% endif %}
+      </button>
+    </form>
+  {% else %}
+    <p class="text-sm text-gray-500 mt-4">
+      <a href="{% url 'blogapp:login' %}" class="text-pink-500 hover:underline">Inicia sesión</a> para dejar una reseña.
+    </p>
+  {% endif %}
+</section>
 {% endblock %}

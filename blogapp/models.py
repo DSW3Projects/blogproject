@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_ckeditor_5.fields import CKEditor5Field
-from bs4 import BeautifulSoup # type: ignore # Importamos el CKEditor 5 para el texto enriquecido
+from bs4 import BeautifulSoup 
 
 # MODELOS
 class Tag(models.Model):
@@ -36,11 +36,12 @@ class Review(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='reviews')
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    comment = models.TextField()  # Este es el campo que almacena el contenido HTML
+    comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name='liked_reviews', blank=True)
 
-    def __str__(self):
-        return f"{self.reviewer.username} - {self.blog.title}"
+    def total_likes(self):
+        return self.likes.count()
 
 
 
@@ -49,9 +50,10 @@ class Comment(models.Model):
     commenter = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
 
-    def __str__(self):
-        return f"Comment by {self.commenter.username}"
+    def total_likes(self):
+        return self.likes.count()
     
 def user_profile_image_path(instance, filename):
     return f'user/{instance.user.username}/profile_images/{filename}'
@@ -59,7 +61,7 @@ def user_profile_image_path(instance, filename):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_image = models.ImageField(
-        upload_to=user_profile_image_path,  # Puedes personalizar la ruta
+        upload_to=user_profile_image_path, 
         blank=True,
         null=True
     )
