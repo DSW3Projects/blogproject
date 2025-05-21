@@ -5,7 +5,7 @@ from .models import Blog, Review, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -16,6 +16,7 @@ from collections import defaultdict
 from django.db.models import Count
 import json
 from django.db.models import Avg
+
 
 
 @user_passes_test(lambda u: u.is_authenticated and u.is_superuser)
@@ -171,6 +172,8 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
+
+
 def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -196,3 +199,23 @@ def register_view(request):
             return render(request, 'blogapp:bloglist.html', {'error': 'Hubo un error al crear la cuenta. Inténtalo de nuevo.'})
 
     return render(request, 'register.html')
+
+# views.py
+
+from .models import UserProfile
+
+@login_required
+def update_profile_image(request):
+    if request.method == 'POST' and request.FILES.get('profile_image'):
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile.profile_image = request.FILES['profile_image']
+        profile.save()
+    return redirect('blogapp:perfil')  # o el nombre de tu vista de perfil
+
+def profile_view_user(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, 'blogapp/profile_user.html', {'profile_user': user})
+
+@login_required
+def profile_view(request):
+    return render(request, 'perfil.html')

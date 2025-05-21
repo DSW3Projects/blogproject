@@ -18,10 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blogapp.urls')),  # Conecta las URLs de blogapp
     path("ckeditor5/", include('django_ckeditor_5.urls')), # Se agrega la ruta para el funcionamiento de CKEditor 5 para la edicion enriquecida
+    path('password-change/', auth_views.PasswordChangeView.as_view(template_name='registration/password_change_form.html'), name='password_change'),
+    path('password-change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'), name='password_change_done'),
+
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

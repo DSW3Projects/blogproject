@@ -8,18 +8,31 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out text-gray-900 dark:text-white animate-fade-in">
           <h2 class="text-xl font-semibold mb-2">
             <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-pink-400 hover:text-pink-300 transition-colors duration-300">
-           {% if blog.first_image_url %}
-  <div class="w-full aspect-[16/9] mb-4 overflow-hidden rounded-xl">
-    <img src="{{ blog.first_image_url }}" alt="Imagen de {{ blog.title }}"
-         class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-  </div>
-{% endif %}
+              {% if blog.first_image_url %}
+                <div class="w-full aspect-[16/9] mb-4 overflow-hidden rounded-xl">
+                  <img src="{{ blog.first_image_url }}" alt="Imagen de {{ blog.title }}"
+                       class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                </div>
+              {% endif %}
               {{ blog.title }}
             </a>
           </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            by <span class="font-medium text-pink-500">{{ blog.author.username }}</span> — {{ blog.created_at|date:"d M Y" }}
-          </p>
+
+          <div class="flex items-center space-x-3 mb-2">
+            <a href="{% url 'blogapp:perfil_user' blog.author.username %}">
+              {% if blog.author.userprofile.profile_image %}
+                <img src="{{ blog.author.userprofile.profile_image.url }}" alt="Avatar de {{ blog.author.username }}"
+                     class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-sm hover:ring-2 hover:ring-pink-500 transition" />
+              {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ blog.author.username }}&background=random&color=fff&size=64"
+                     alt="Avatar generado de {{ blog.author.username }}"
+                     class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-sm hover:ring-2 hover:ring-pink-500 transition" />
+              {% endif %}
+            </a>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              by <span class="font-medium text-pink-500">{{ blog.author.username }}</span> — {{ blog.created_at|date:"d M Y" }}
+            </p>
+          </div>
 
           <p class="mt-2 text-sm">
             <strong>Rating:</strong>
@@ -30,14 +43,14 @@
             {% endif %}
           </p>
 
-         <p class="text-sm mt-1">
-  <strong>Tags:</strong>
-  {% for tag in blog.tags.all %}
-    <span class="inline-block bg-pink-100 text-pink-800 text-xs font-semibold px-2 py-1 rounded-full mr-1">{{ tag.name }}</span>
-  {% empty %}
-    <span class="text-gray-400">No tiene etiquetas</span>
-  {% endfor %}
-</p>
+          <p class="text-sm mt-1">
+            <strong>Tags:</strong>
+            {% for tag in blog.tags.all %}
+              <span class="inline-block bg-pink-100 text-pink-800 text-xs font-semibold px-2 py-1 rounded-full mr-1">{{ tag.name }}</span>
+            {% empty %}
+              <span class="text-gray-400">No tiene etiquetas</span>
+            {% endfor %}
+          </p>
 
         </div>
       {% empty %}

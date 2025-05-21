@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-white/70 dark:bg-black/70 transition-all duration-300">
+  <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="grid md:grid-cols-3 gap-8 p-8">
+      
+      <!-- Perfil lateral -->
+      <div class="flex flex-col items-center text-center space-y-4">
+        <div class="relative">
+          {% if user.userprofile.profile_image %}
+            <img src="{{ user.userprofile.profile_image.url }}" alt="Avatar"
+              class="w-32 h-32 rounded-full border-4 border-primary-500 shadow-md object-cover">
+          {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random&color=fff&size=128"
+              alt="Avatar"
+              class="w-32 h-32 rounded-full border-4 border-primary-500 shadow-md object-cover">
+          {% endif %}
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ user.username }}</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-300">{{ user.email }}</p>
+        </div>
+        {% if user.is_superuser %}
+          <span class="px-4 py-1 text-sm font-semibold bg-purple-100 text-purple-800 rounded-full">
+            Administrador
+          </span>
+        {% else %}
+          <span class="px-4 py-1 text-sm font-semibold bg-blue-100 text-blue-800 rounded-full">
+            Usuario
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Información -->
+      <div class="md:col-span-2">
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-white mb-4 border-b pb-2">Detalles del perfil</h3>
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Nombre de usuario</label>
+            <p class="mt-1 text-base font-semibold text-gray-800 dark:text-white">{{ user.username }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Correo electrónico</label>
+            <p class="mt-1 text-base font-semibold text-gray-800 dark:text-white">{{ user.email }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Fecha de registro</label>
+            <p class="mt-1 text-base font-semibold text-gray-800 dark:text-white">{{ user.date_joined|date:"d/m/Y" }}</p>
+          </div>
+        </div>
+
+        <!-- Opciones -->
+        <div class="mt-10">
+          <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">Opciones</h4>
+          <div class="space-y-2">
+            <a href="{% url 'password_change' %}"
+               class="inline-block text-sm text-primary-600 hover:text-primary-700 hover:underline transition">
+              Cambiar contraseña
+            </a><br>
+            <a href="{% url 'blogapp:logout' %}"
+               class="inline-block text-sm text-red-500 hover:text-red-600 hover:underline transition">
+              Cerrar sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario para subir imagen -->
+    <div class="border-t dark:border-gray-700 p-6 bg-gray-50 dark:bg-gray-900">
+      <form action="{% url 'blogapp:update_profile_image' %}" method="post" enctype="multipart/form-data" class="flex flex-col md:flex-row items-center justify-between gap-4">
+        {% csrf_token %}
+        <div class="flex items-center space-x-4">
+          <label for="profile_image" class="text-gray-700 dark:text-white font-medium">
+            Cambiar imagen de perfil:
+          </label>
+          <input type="file" name="profile_image" id="profile_image"
+                 class="text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-500 file:text-white hover:file:bg-primary-600">
+        </div>
+        <button type="submit" class="px-6 py-2 rounded-full bg-primary-500 hover:bg-primary-600 text-white font-semibold transition">
+          Guardar imagen
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

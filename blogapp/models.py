@@ -53,3 +53,16 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.commenter.username}"
     
+def user_profile_image_path(instance, filename):
+    return f'user/{instance.user.username}/profile_images/{filename}'
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.ImageField(
+        upload_to=user_profile_image_path,  # Puedes personalizar la ruta
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.user.username
