@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@400;500;700&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  font-family: 'DM Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  cursor: none;
+
+  background-color: white;
+  background-image: url('https://img.freepik.com/foto-gratis/pareja-besada-sol-abraza-disfrutando-belleza-naturaleza-generada-ia_188544-43212.jpg?semt=ais_hybrid&w=740');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+
+  color: #111827; /* gray-900 */
+  transition: background-image 0.8s ease, background-color 0.8s ease;
+}
+
+html.dark, body.dark {
+  background-color: rgb(2, 2, 2);
+  background-image: url('https://images.unsplash.com/photo-1494774157365-9e04c6720e47?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+  color: #f9fafb; /* white */
+}
+
+/* Root layout */
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Cursor personalizado */
+#custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 1000;
+  animation: pulse 1s infinite;
+  transform: translate(-50%, -50%);
+  transition: filter 0.2s ease, transform 0.1s ease;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.3); }
+}
+
+/* General styles */
+a {
+  font-weight: 500;
+  color: #ec4899;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: #f9a8d4;
+}
+
+button {
+  border-radius: 8px;
+  border: none;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  background-color: #ec4899;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+button:hover {
+  background-color: #db2777;
+}
+
+/* Optional media query for system preference */
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    background-color: rgb(2, 2, 2);
+    background-image: url('https://images.unsplash.com/photo-1494774157365-9e04c6720e47?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+    color: #f9fafb;
+  }
+}
+
+body {
+  cursor: default; /* cursor flecha siempre visible en toda la ventana */
+}
+button, a {
+  cursor: pointer; /* manito solo sobre botones y enlaces */
+}
+* {
+  cursor: none !important;
+}

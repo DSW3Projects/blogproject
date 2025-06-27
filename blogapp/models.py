@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_ckeditor_5.fields import CKEditor5Field
 from bs4 import BeautifulSoup 
+import re
+
 
 # MODELOS
 class Tag(models.Model):
@@ -25,10 +27,18 @@ class Blog(models.Model):
 
     @property
     def first_image_url(self):
+        # Primero intenta obtener de HTML
         soup = BeautifulSoup(self.content, 'html.parser')
         img = soup.find('img')
         if img:
             return img['src']
+        
+        # Si no encuentra img en HTML, intenta extraer URL de Markdown
+        md_img_regex = r'!\[.*?\]\((.*?)\)'
+        match = re.search(md_img_regex, self.content)
+        if match:
+            return match.group(1)
+        
         return None
 
 
@@ -68,3 +78,11 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class UploadedImage(models.Model):
+    image = models.ImageField(upload_to='uploads/')
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.image.name
